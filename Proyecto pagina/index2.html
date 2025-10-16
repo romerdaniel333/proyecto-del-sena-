@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototipo Interfaz - GA3-220501096-AA2-EV01</title>
+  <!-- Materialize CSS (Material Design) CDN -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <style>
+    /* --- Usabilidad y Accesibilidad (CSS básico) --- */
+    :root{
+      --primary: #1976d2; /* Material blue */
+      --accent: #ff6f00;
+      --bg: #f5f5f5;
+      --text: #212121;
+      --large-touch: 48px; /* tamaño táctil confortable */
+    }
+    body{background:var(--bg); color:var(--text); font-family: "Roboto", sans-serif;}
+    main{padding:1rem;}
+    .screen{display:none;} /* cada 'pantalla' se muestra según navegación */
+    .active{display:block;}
+    a, button{outline-color: var(--accent);} /* foco visible */
+    /* contraste alto para elementos interactivos */
+    .primary-btn{background:var(--primary); color:white; padding:0.6rem 1rem; border-radius:8px; min-height:var(--large-touch); display:inline-flex; align-items:center;}
+    .sr-only{position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
+    nav .brand-logo{font-weight:600}
+    /* focus ring mejorado */
+    :focus{box-shadow:0 0 0 3px rgba(25,118,210,0.18);}
+    /* estilos para estados de carga y mensajes accesibles */
+    .status{padding:0.5rem; margin-top:0.5rem; border-radius:6px}
+    .visually-updated[aria-live]{border-left:4px solid var(--primary); padding-left:0.8rem}
+    /* layout responsivo para tarjetas */
+    .card .card-content p{min-height: 3rem}
+    footer{padding:1rem 0; text-align:center;}
+    /* Tamaño de golpe táctil para iconos/links en barra lateral */
+    .side-link{padding:0.75rem 1rem; display:flex; align-items:center; min-height:var(--large-touch);}
+    /* Foco en elementos de lista */
+    .list-item:focus{background:rgba(25,118,210,0.06)}
+  </style>
+</head>
+<body>
+  <!-- Skip link para usuarios de teclado y lectores de pantalla -->
+  <a class="sr-only" href="#main-content">Saltar al contenido principal</a>
+
+  <!-- Nav superior -->
+  <nav role="navigation" aria-label="Barra principal">
+    <div class="nav-wrapper container">
+      <a href="#home" class="brand-logo" id="brand" tabindex="0">MiApp Prototipo</a>
+      <a href="#" data-target="mobile-menu" class="sidenav-trigger" aria-controls="mobile-menu" aria-expanded="false"><i class="material-icons">menu</i></a>
+      <ul id="nav-desktop" class="right hide-on-med-and-down">
+        <li><a href="#home" class="nav-link" data-screen="home" role="link">Inicio</a></li>
+        <li><a href="#list" class="nav-link" data-screen="list">Contenidos</a></li>
+        <li><a href="#settings" class="nav-link" data-screen="settings">Ajustes</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Nav móvil (sidenav) -->
+  <ul class="sidenav" id="mobile-menu" role="navigation" aria-label="Menú móvil">
+    <li><a href="#home" class="side-link nav-link" data-screen="home">Inicio</a></li>
+    <li><a href="#list" class="side-link nav-link" data-screen="list">Contenidos</a></li>
+    <li><a href="#settings" class="side-link nav-link" data-screen="settings">Ajustes</a></li>
+  </ul>
+
+  <main id="main-content" tabindex="-1">
+    <!-- Pantalla 1: Home -->
+    <section id="screen-home" class="screen active" role="region" aria-label="Pantalla de inicio">
+      <div class="container">
+        <h1>Bienvenido</h1>
+        <p class="flow-text">Prototipo de interfaz con reglas de usabilidad y accesibilidad. Use la navegación superior o el menú.</p>
+        <div class="row">
+          <div class="col s12 m6">
+            <div class="card" role="article">
+              <div class="card-content">
+                <span class="card-title">Accesibilidad</span>
+                <p>Etiquetas, roles ARIA, contraste y navegación por teclado implementados.</p>
+              </div>
+              <div class="card-action">
+                <a href="#" class="primary-btn nav-link" data-screen="list" role="button" aria-pressed="false">Ver contenidos</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12 m6">
+            <div class="card">
+              <div class="card-content">
+                <span class="card-title">Prueba API pública</span>
+                <p>Solicitar datos de ejemplo desde una API pública y mostrar resultados con manejo de errores.</p>
+                <div id="api-status" class="status" aria-live="polite"></div>
+              </div>
+              <div class="card-action">
+                <button class="primary-btn" id="btn-fetch" aria-controls="posts-list">Cargar ejemplos</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 2: Listado -->
+    <section id="screen-list" class="screen" role="region" aria-label="Pantalla de contenidos">
+      <div class="container">
+        <nav aria-label="migas de pan">
+          <div class="nav-wrapper white">
+            <div class="col s12">
+              <a href="#" class="breadcrumb nav-link" data-screen="home">Inicio</a>
+              <a href="#" class="breadcrumb">Contenidos</a>
+            </div>
+          </div>
+        </nav>
+
+        <h2>Listado de ejemplos</h2>
+        <p id="list-desc">Lista cargada desde la API (puede navegar con teclado). Cada elemento tiene acción 'Ver detalle'.</p>
+
+        <ul id="posts-list" class="collection" role="list">
+          <!-- items añadidos dinámicamente -->
+        </ul>
+
+        <p class="visually-updated" id="live-message" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Pantalla 3: Ajustes / Accesibilidad -->
+    <section id="screen-settings" class="screen" role="region" aria-label="Pantalla de ajustes">
+      <div class="container">
+        <h2>Ajustes de accesibilidad</h2>
+        <form id="settings-form" aria-labelledby="settings-title">
+          <div class="input-field">
+            <label for="font-size">Tamaño de fuente (px)</label>
+            <input id="font-size" type="number" min="12" max="24" value="16" aria-describedby="font-desc">
+            <span id="font-desc" class="helper-text">Ajuste para mejorar legibilidad.</span>
+          </div>
+
+          <p>
+            <label>
+              <input type="checkbox" id="high-contrast" />
+              <span>Modo alto contraste</span>
+            </label>
+          </p>
+
+          <p>
+            <button class="primary-btn" type="button" id="apply-settings">Aplicar</button>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <small>Prototipo entregable - Evidencia GA3-220501096-AA2-EV01</small>
+    </div>
+  </footer>
+
+  <!-- Materialize + Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script>
+    /*
+      MAPA DE NAVEGACIÓN (documentado):
+      - home (pantalla inicial) -> list (Contenidos) -> settings (Ajustes)
+      - Barra superior: enlaces directos; Sidenav en móvil
+      - Accesibilidad: each nav-link tiene data-screen para controlar la navegación y eventos de teclado
+
+      REQUISITOS DE USABILIDAD Y ACCESIBILIDAD CUBIERTOS:
+      - Skip link
+      - Roles y etiquetas ARIA en regiones y live regions
+      - Focus visible y tabindex donde aplica
+      - Tamaños táctiles mínimos y botones con texto descriptivo
+      - Contenido dinámico anunciado con aria-live
+      - Contraste y opción de alto contraste
+
+      INSTRUCCIONES DE PRUEBA (API):
+      - botón 'Cargar ejemplos' hace fetch a https://jsonplaceholder.typicode.com/posts?_limit=6
+      - al seleccionar 'Ver detalle' se simula abrir pantalla de detalles (a modo de demostración, muestra un alert accesible y actualiza aria-live)
+    */
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var elems = document.querySelectorAll('.sidenav');
+      M.Sidenav.init(elems);
+
+      // inicializa links
+      document.querySelectorAll('.nav-link').forEach(function(link){
+        link.addEventListener('click', navigateToScreen);
+        link.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ navigateToScreen.call(this,e); } });
+      });
+
+      // Botón de fetch
+      document.getElementById('btn-fetch').addEventListener('click', fetchPosts);
+
+      // Ajustes
+      document.getElementById('apply-settings').addEventListener('click', applySettings);
+
+      // mejora de accesibilidad: enfoque a contenido principal al navegar
+      function navigateToScreen(e){
+        e.preventDefault();
+        var screen = this.dataset.screen;
+        if(!screen) return;
+        showScreen(screen);
+      }
+
+      function showScreen(id){
+        document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+        var el = document.getElementById('screen-' + id);
+        if(el){ el.classList.add('active'); el.focus(); }
+
+        // marca aria-current en nav
+        document.querySelectorAll('.nav-link').forEach(function(n){ n.removeAttribute('aria-current'); });
+        document.querySelectorAll('.nav-link[data-screen]').forEach(function(n){ if(n.dataset.screen === id) n.setAttribute('aria-current','true'); });
+      }
+
+      // fetch ejemplo - pruebas con API pública
+      async function fetchPosts(){
+        const status = document.getElementById('api-status');
+        const list = document.getElementById('posts-list');
+        const live = document.getElementById('live-message');
+        status.textContent = 'Cargando...';
+        status.setAttribute('role','status');
+
+        try{
+          const resp = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6');
+          if(!resp.ok) throw new Error('Error en la respuesta');
+          const data = await resp.json();
+          list.innerHTML = '';
+          data.forEach(function(item){
+            const li = document.createElement('li');
+            li.className = 'collection-item list-item';
+            li.setAttribute('tabindex','0');
+            li.setAttribute('role','listitem');
+            li.innerHTML = `<div><strong>${escapeHtml(item.title)}</strong><p>${truncate(escapeHtml(item.body),120)}</p><a href='#' class='secondary-action nav-link' data-id='${item.id}' data-screen='list' aria-label='Ver detalle de ${escapeHtml(item.title)}'>Ver detalle</a></div>`;
+            // acción de ver detalle
+            li.querySelector('.secondary-action').addEventListener('click', function(e){ e.preventDefault(); showDetail(item); });
+            li.querySelector('.secondary-action').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); showDetail(item);} });
+            list.appendChild(li);
+          });
+          status.textContent = 'Cargado correctamente.';
+          live.textContent = 'Se han cargado ' + data.length + ' elementos.';
+          // navegar al listado
+          showScreen('list');
+        }catch(err){
+          console.error(err);
+          status.textContent = 'Error al cargar datos. Compruebe su conexión.';
+          status.setAttribute('aria-live','polite');
+        }
+      }
+
+      function showDetail(item){
+        // En un prototipo simple mostramos un diálogo accesible
+        const live = document.getElementById('live-message');
+        live.textContent = 'Abriendo detalle de: ' + item.title;
+        alert('Detalle (simulado)\n\nTítulo: ' + item.title + '\n\n' + item.body);
+      }
+
+      function applySettings(){
+        const fontSize = document.getElementById('font-size').value;
+        const highContrast = document.getElementById('high-contrast').checked;
+        document.documentElement.style.fontSize = fontSize + 'px';
+        if(highContrast){
+          document.documentElement.style.setProperty('--bg','#111');
+          document.documentElement.style.setProperty('--text','#eee');
+          document.documentElement.style.setProperty('--primary','#ffeb3b');
+        } else {
+          document.documentElement.style.setProperty('--bg','#f5f5f5');
+          document.documentElement.style.setProperty('--text','#212121');
+          document.documentElement.style.setProperty('--primary','#1976d2');
+        }
+        document.getElementById('live-message').textContent = 'Preferencias aplicadas.';
+      }
+
+      // utilidades
+      function truncate(str,n){ return (str.length>n)? str.slice(0,n-1) + '…' : str; }
+      function escapeHtml(unsafe){ return unsafe.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+      // Inicialización mínima
+      document.getElementById('brand').addEventListener('click', function(e){ e.preventDefault(); showScreen('home'); });
+
+      // Enlaces de navegación por teclado: permitir flechas para moverse por la lista (mejora de usabilidad)
+      document.addEventListener('keydown', function(e){
+        const active = document.activeElement;
+        if(active && active.classList.contains('list-item')){
+          if(e.key === 'ArrowDown'){
+            e.preventDefault();
+            const next = active.nextElementSibling || active;
+            next.focus();
+          } else if(e.key === 'ArrowUp'){
+            e.preventDefault();
+            const prev = active.previousElementSibling || active;
+            prev.focus();
+          }
+        }
+      });
+
+    });
+  </script>
+
+</body>
+</html>
